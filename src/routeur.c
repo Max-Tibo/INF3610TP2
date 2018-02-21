@@ -513,7 +513,7 @@ void TaskStats(void *pdata) {
 		OSSemPend(semStats, &err);
 		err_msg("Error accepting semaphore", err);
 		
-		OSMutexPend(mutexPrinting, &err);
+		OSMutexPend(mutexPrinting, 0, &err);
 		err_msg("Error accpeting mutex", err);
 		
 		xil_printf("\n------------------ Affichage des statistiques ------------------\n");
