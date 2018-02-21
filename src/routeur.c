@@ -510,7 +510,12 @@ void TaskStats(void *pdata) {
 	uint8_t err;
 	while (true) {
 		/* À compléter */
-
+		OSSemPend(semStats, &err);
+		err_msg("Error accepting semaphore", err);
+		
+		OSMutexPend(mutexPrinting, &err);
+		err_msg("Error accpeting mutex", err);
+		
 		xil_printf("\n------------------ Affichage des statistiques ------------------\n");
 		xil_printf("Nb de packets total traites : %d\n", nbPacketCrees);
 		xil_printf("Nb de packets total traites : %d\n", nbPacketTraites);
@@ -526,7 +531,9 @@ void TaskStats(void *pdata) {
 		xil_printf("Moyenne file medium : %d\n", moyenne_msg_medium);
 		xil_printf("Maximum file high : %d\n", max_msg_high);
 		xil_printf("Moyenne file high : %d\n", moyenne_msg_high);
-
+		
+		err = OSMutexPost(mutexPrinting);
+		err_msg("Error posting mutex", err);
 		/* À compléter */
 	}
 }
