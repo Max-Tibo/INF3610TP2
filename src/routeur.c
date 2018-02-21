@@ -510,7 +510,7 @@ void TaskStats(void *pdata) {
 	uint8_t err;
 	while (true) {
 		/* À compléter */
-		OSSemPend(semStats, &err);
+		OSSemPend(semStats, 0, &err);
 		err_msg("Error accepting semaphore", err);
 		
 		OSMutexPend(mutexPrinting, 0, &err);
