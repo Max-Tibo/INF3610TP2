@@ -407,33 +407,6 @@ void TaskGeneratePacket(void *data) {
 
 			err = OSQPost(inputQ, packet);
 
-			OSMutexPend(mutexStats, 0, &err);
-
-			err = OSQQuery(inputQ,&qInfo);
-			nb_echantillons += qInfo.OSNMsgs;
-
-			err = OSMutexPost(mutexStats);
-
-			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
-			OSMutexPend(mutexStats, 0, &err);
-
-			err = OSQQuery(inputQ,&qInfo);
-			max_msg_input = qInfo.OSQSize;
-
-			err = OSMutexPost(mutexStats);
-
-			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
-			OSMutexPend(mutexStats, 0, &err);
-
-			err = OSQQuery(inputQ,&qInfo);
-			moyenne_msg_input += qInfo.OSNMsgs;
-
-			err = OSMutexPost(mutexStats);
-
-			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
 			if (err == OS_ERR_Q_FULL) {
 
 				xil_printf(
@@ -618,6 +591,33 @@ void TaskComputing(void *pdata) {
 
 		clk_init = OSTimeGet();
 
+		OSMutexPend(mutexStats, 0, &err);
+
+		err = OSQQuery(inputQ,&qInfo);
+		nb_echantillons += qInfo.OSNMsgs;
+
+		err = OSMutexPost(mutexStats);
+
+		err_msg("Error posting mutex in TaskGeneratePacket", err);
+
+		OSMutexPend(mutexStats, 0, &err);
+
+		err = OSQQuery(inputQ,&qInfo);
+		max_msg_input = qInfo.OSQSize;
+
+		err = OSMutexPost(mutexStats);
+
+		err_msg("Error posting mutex in TaskGeneratePacket", err);
+
+		OSMutexPend(mutexStats, 0, &err);
+
+		err = OSQQuery(inputQ,&qInfo);
+		moyenne_msg_input += qInfo.OSNMsgs;
+
+		err = OSMutexPost(mutexStats);
+
+		err_msg("Error posting mutex in TaskGeneratePacket", err);
+
 
 		packet = OSQPend(inputQ, 0, &err);
 
@@ -668,6 +668,11 @@ void TaskComputing(void *pdata) {
 
 		else if (packet->type == PACKET_VIDEO) {
 
+
+			err_msg("Error posting mutex in TaskGeneratePacket", err);
+
+			err = OSQPost(highQ, packet);
+
 			OSMutexPend(mutexStats, 0, &err);
 
 			err = OSQQuery(highQ,&qInfo);
@@ -683,10 +688,6 @@ void TaskComputing(void *pdata) {
 			moyenne_msg_high += qInfo.OSNMsgs;
 
 			err = OSMutexPost(mutexStats);
-
-			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
-			err = OSQPost(highQ, packet);
 
 			if (err == OS_ERR_Q_FULL) {
 
@@ -737,6 +738,7 @@ void TaskComputing(void *pdata) {
 
 		else if (packet->type == PACKET_AUDIO) {
 
+			err = OSQPost(mediumQ, packet);
 
 			OSMutexPend(mutexStats, 0, &err);
 
@@ -755,9 +757,6 @@ void TaskComputing(void *pdata) {
 			err = OSMutexPost(mutexStats);
 
 			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
-
-			err = OSQPost(mediumQ, packet);
 
 			if (err == OS_ERR_Q_FULL) {
 
@@ -808,6 +807,9 @@ void TaskComputing(void *pdata) {
 
 		else if (packet->type == PACKET_AUTRE) {
 
+
+			err = OSQPost(lowQ, packet);
+
 			OSMutexPend(mutexStats, 0, &err);
 
 			err = OSQQuery(lowQ,&qInfo);
@@ -826,8 +828,6 @@ void TaskComputing(void *pdata) {
 			err = OSMutexPost(mutexStats);
 
 			err_msg("Error posting mutex in TaskGeneratePacket", err);
-
-			err = OSQPost(lowQ, packet);
 
 			if (err == OS_ERR_Q_FULL) {
 
