@@ -1149,13 +1149,6 @@ void TaskPrint(void *data) {
 
 		}
 
-		err = OSMutexPost(mb);
-
-		err_msg("OSMboxPost in TaskPrint", err);
-
-		err = OSSemPost(semStats);
-
-		err_msg("OSSemPost in TaskPrint", err);
 
 	}
 
